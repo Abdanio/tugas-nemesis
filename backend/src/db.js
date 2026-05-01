@@ -1,4 +1,5 @@
-const { createClient } = require("@libsql/client");
+// Force the "web" client to avoid native libsql binaries on serverless.
+const { createClient } = require("@libsql/client/web");
 const { TURSO_CONNECTION_URL, TURSO_AUTH_TOKEN } = require("./config");
 
 let _db = null;
