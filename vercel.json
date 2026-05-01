@@ -1,11 +1,11 @@
 {
   "functions": {
-    "backend/api/index.js": {
+    "api/index.js": {
       "maxDuration": 60
     }
   },
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/backend/api/index.js" },
+    { "source": "/api/(.*)", "destination": "/api/index.js" },
     { "source": "/", "destination": "/frontend/index.html" },
     { "source": "/(.*)", "destination": "/frontend/$1" }
   ]
