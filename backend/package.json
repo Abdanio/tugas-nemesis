@@ -6,12 +6,13 @@
   "scripts": {
     "dev": "node --watch src/server.js",
     "prestart": "node scripts/init-db.js",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "sync:turso": "node scripts/sync-local-to-turso.js"
   },
   "dependencies": {
+    "@libsql/client": "^0.10.0",
     "@supabase/supabase-js": "^2.50.0",
     "axios": "^1.15.2",
-    "better-sqlite3": "^12.9.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.0",
     "express": "^5.2.1",

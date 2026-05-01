@@ -1,19 +1,37 @@
 const { getClient } = require("../src/db");
 const { createApp } = require("../src/app");
-const { initializeDatabase, logBuffer } = require("../scripts/init-db");
 
 let _app = null;
 let initPromise = null;
 let initError = null;
 
+function setCorsHeaders(req, res) {
+  const requestOrigin = req.headers && req.headers.origin ? String(req.headers.origin) : "";
+  const allowOrigin = requestOrigin || "*";
+
+  res.setHeader("Access-Control-Allow-Origin", allowOrigin);
+  if (requestOrigin) {
+    res.setHeader("Vary", "Origin");
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+  }
+
+  res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS,PATCH,DELETE,POST,PUT");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
+  );
+  res.setHeader("Access-Control-Max-Age", "86400");
+}
+
 async function getApp() {
   if (initError) throw initError;
-  
+
   if (!_app) {
     if (!initPromise) {
-      initPromise = initializeDatabase()
-        .then(() => {
+      initPromise = Promise.resolve()
+        .then(async () => {
           const db = getClient();
+          await db.execute("SELECT 1");
           _app = createApp(db);
         })
         .catch((err) => {
@@ -30,12 +48,19 @@ async function getApp() {
 module.exports = async (req, res) => {
   const url = req.url || "/";
 
+  setCorsHeaders(req, res);
+
+  if (req.method === "OPTIONS") {
+    res.status(200).end();
+    return;
+  }
+
   // Endpoint untuk cek status log secara real-time
   if (url === "/api/status") {
     return res.json({
       initialized: !!_app,
       error: initError ? initError.message : null,
-      logs: logBuffer
+      logs: []
     });
   }
 
@@ -96,20 +121,6 @@ module.exports = async (req, res) => {
 
   try {
     const app = await getApp();
-    
-    // Manual CORS headers
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-    res.setHeader(
-      'Access-Control-Allow-Headers',
-      'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-    );
-    
-    if (req.method === 'OPTIONS') {
-      res.status(200).end();
-      return;
-    }
 
     return app(req, res);
   } catch (err) {
