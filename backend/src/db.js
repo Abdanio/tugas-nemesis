@@ -61,6 +61,12 @@ class TursoClientWrapper {
 
 function getClient() {
   if (!_db) {
+    if (!TURSO_CONNECTION_URL) {
+      throw new Error(
+        "Missing Turso config: set TURSO_CONNECTION_URL (or TURSO_DATABASE_URL) in environment variables."
+      );
+    }
+
     _db = createClient({
       url: TURSO_CONNECTION_URL,
       authToken: TURSO_AUTH_TOKEN,

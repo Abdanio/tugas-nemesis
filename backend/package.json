@@ -5,9 +5,7 @@
   "main": "src/server.js",
   "scripts": {
     "dev": "node --watch src/server.js",
-    "prestart": "node scripts/init-db.js",
-    "start": "node src/server.js",
-    "sync:turso": "node scripts/sync-local-to-turso.js"
+    "start": "node src/server.js"
   },
   "dependencies": {
     "@libsql/client": "^0.10.0",

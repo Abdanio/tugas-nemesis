@@ -8,10 +8,7 @@ if (!Number.isInteger(port) || port <= 0) {
   throw new Error("PORT must be a positive integer.");
 }
 
-const tursoUrl = process.env.TURSO_CONNECTION_URL || process.env.TURSO_DATABASE_URL;
-if (!tursoUrl) {
-  throw new Error("TURSO_CONNECTION_URL or TURSO_DATABASE_URL environment variable is required.");
-}
+const tursoUrl = process.env.TURSO_CONNECTION_URL || process.env.TURSO_DATABASE_URL || "";
 
 module.exports = {
   PORT: port,
