@@ -1,0 +1,8 @@
+{
+  "name": "tugas-nemesis",
+  "private": true,
+  "workspaces": [
+    "backend"
+  ]
+}
+
